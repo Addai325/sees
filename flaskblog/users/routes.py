@@ -32,6 +32,7 @@ def login():
         user = User.query.filter_by(email=form.email.data).first()
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
+            flash('You have been logged in successfully', 'success')
             next_page = request.args.get('next')
             return redirect(next_page) if next_page else redirect(url_for('main.home'))
         else:
@@ -71,7 +72,7 @@ def account():
 def user_posts(username):
     page=request.args.get('page', 1, type=int)
     user = User.query.filter_by(username=username).first_or_404()
-    posts = Post.query.filter_by(author=user).order_by(Post.date_posted.desc()).paginate(per_page=2, page=page)
+    posts = Post.query.filter_by(author=user).order_by(Post.date_posted.desc()).paginate(per_page=9, page=page)
     return render_template('user_posts.html', posts=posts, user=user)
 
 
